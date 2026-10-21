@@ -1,0 +1,30 @@
+{
+  "name": "yuna-miu",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Yuna Miu, a playful Discord companion.",
+  "author": "Gamearoo",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=24.17.0"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node --enable-source-maps dist/index.js",
+    "deploy": "tsx src/deploy-commands.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "discord.js": "^14.27.0",
+    "dotenv": "^18.0.8",
+    "ram-api.js": "^16.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
