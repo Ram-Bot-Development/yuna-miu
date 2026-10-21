@@ -4,10 +4,10 @@
 
 ![Yuna Miu — Coming Soon](https://rambot.xyz/ram-api-images/other/yunacomingsoon.png)
 
-[![Status](https://img.shields.io/badge/Status-Pre--Release-ff69b4)](#development-status)
-[![Discord](https://img.shields.io/badge/Discord-Bot-5865F2?logo=discord&logoColor=white)](https://discord.gamearoo.dev)
-[![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
-[![Contributions](https://img.shields.io/badge/Contributions-Welcome-blueviolet)](#contributing)
+![Status](https://img.shields.io/badge/Status-Pre--Release-ff69b4)
+![Discord](https://img.shields.io/badge/Discord-Bot-5865F2?logo=discord&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-blue)
+![Contributions](https://img.shields.io/badge/Contributions-Welcome-blueviolet)
 
 ## 🌸 About Yuna Miu
 
@@ -22,6 +22,7 @@ Yuna is part of the same bot friend group as **RamBot**, but she's an independen
 ## ✨ Planned Features
 
 ### 🎮 Fun & Games
+
 - Interactive mini-games
 - Trivia and community challenges
 - Would You Rather
@@ -29,12 +30,14 @@ Yuna is part of the same bot friend group as **RamBot**, but she's an independen
 - Multiplayer activities
 
 ### 💕 Friendship System
+
 - Build friendships with other members
 - Fun social interactions
 - Friendship progression
 - Unlockable surprises
 
 ### 🐱 Unique Personality
+
 - Cheerful and playful responses
 - Custom greetings and interactions
 - Catgirl-inspired reactions
@@ -52,6 +55,7 @@ Yuna is part of the same bot friend group as **RamBot**, but she's an independen
 **Note:** Achievements and rewards will be accessible exclusively through Yuna's web dashboard, not through Discord commands.
 
 ### 🌸 Community Interactions
+
 - Community activities
 - Social engagement features
 - Interactive commands
