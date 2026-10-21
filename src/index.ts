@@ -14,7 +14,7 @@ import { ramapiversion } from './version.js';
 YunaBot.on(Events.ClientReady, () => {
     void handleReady(YunaBot);
     ramapi.Events.emit("start-update-check");
-    new ramapi.Utils().VersionCheck(ramapiversion, "60000", 6);
+    new ramapi.Utils().VersionCheck(ramapiversion, 60000, 6);
     //new ramapi.Utils().pingAsync().then(data => { logger.info(`Ram Api's Ping. ${data.ping}`) }).catch(err => {logger.error(`Error Checking ping for Ram API`, err)})
     new ramapi.DemoEndpoints(60000, 5).pingAsync().then(data => { logger.info(`Ram Api's Ping. ${data.ping}`) }).catch(err => {logger.error(`Error Checking ping for Ram API`, err)});
 
