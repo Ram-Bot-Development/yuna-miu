@@ -1,0 +1,14 @@
+name: yuna-miu
+
+services:
+  yuna:
+    build: .
+    image: yuna-miu:local
+    container_name: yuna-miu
+    init: true
+    restart: unless-stopped
+    env_files:
+    - .env
+    environment:
+      NODE_ENV: production
+      DEPLOY_COMMANDS: "true"

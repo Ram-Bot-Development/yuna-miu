@@ -91,7 +91,7 @@ Detailed contribution guidelines will be published as development progresses.
 
 ## 📋 Roadmap
 
-- [ ] Core Discord bot functionality
+- [x] Core Discord bot functionality
 - [ ] Personality and interaction system
 - [ ] Fun and games
 - [ ] Friendship system
