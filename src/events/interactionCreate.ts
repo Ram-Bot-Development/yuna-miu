@@ -15,19 +15,29 @@ export async function handleInteraction(int: Interaction): Promise<void> {
     }
     try {
         await command.execute(int);
-    
     } catch (error) {
+        const code = discordErrorCode(error);
+        if (code === 10062 || code === 40060) {
+            logger.warn(`/${int.commandName} was already closed by Discord (${code}). Another logged-in copy of this bot may have answered it.`);
+            return;
+        }
         logger.error(`/${int.commandName} failed`, error);
 
         try {
-            const content = `Something went wrong running that.`;
+            const content = 'Something went wrong running that.';
             if (int.replied || int.deferred) {
-                await int.followUp( {content, flags: MessageFlags.Ephemeral});
+                await int.followUp({ content, flags: MessageFlags.Ephemeral });
             } else {
-                await int.reply({content, flags: MessageFlags.Ephemeral});
+                await int.reply({ content, flags: MessageFlags.Ephemeral });
             }
         } catch (err) {
-            logger.error(`Could not send the wrror reply`, err);
+            if (discordErrorCode(err) === 10062 || discordErrorCode(err) === 40060) return;
+            logger.error('Could not send the error reply', err);
         }
     }
+}
+
+function discordErrorCode(error: unknown): number | undefined {
+    if (!error || typeof error !== 'object' || !('code' in error)) return undefined;
+    return typeof error.code === 'number' ? error.code : undefined;
 }
