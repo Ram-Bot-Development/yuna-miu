@@ -12,3 +12,10 @@ services:
     environment:
       NODE_ENV: production
       DEPLOY_COMMANDS: "true"
+      DATA_DIR: /app/data
+      ENABLE_MESSAGE_CONTENT_INTENT: "true"
+    volumes:
+      - yuna-data:/app/data
+
+volumes:
+  yuna-data:
