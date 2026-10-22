@@ -25,13 +25,13 @@ export const invite = {
         }
 
         const url =
-      `https://discord.com/oauth2/authorize?client_id=${applicationId}` +
-      '&permissions=0&scope=bot%20applications.commands';
+            `https://discord.com/oauth2/authorize?client_id=${applicationId}` +
+            '&permissions=19456&scope=bot%20applications.commands';
 
       const row = new ActionRowBuilder<ButtonBuilder>().addComponents(new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel('Invite Yuna').setURL(url));
 
       await int.reply({
-        content: "add Yuno to a server. She does not ask for extra permissions yet.",
+        content: 'Add Yuna to a server. She asks to view channels, send messages, and use embeds.',
         components: [row],
         flags: MessageFlags.Ephemeral
       })
