@@ -4,9 +4,12 @@ import { Events } from 'discord.js';
 import { YunaBot } from './client.js';
 import { loadCommands } from './commands/index.js';
 import { loadConfig } from './config.js';
+import { handleGuildMemberAdd } from './events/guildMemberAdd.js';
 import { handleReady } from './events/ready.js';
 import { handleInteraction } from './events/interactionCreate.js';
+import { handleMessage } from './events/messageCreate.js';
 import { logger } from './logger.js';
+import { createPersonalityRuntime } from './services/runtime.js';
 import * as ramapi from 'ram-api.js';
 import { ramapiversion } from './version.js';
 
@@ -22,7 +25,15 @@ YunaBot.on(Events.ClientReady, () => {
 
 YunaBot.on(Events.InteractionCreate, (interaction) => {
     void handleInteraction(interaction);
-})
+});
+
+YunaBot.on(Events.MessageCreate, (message) => {
+    void handleMessage(message);
+});
+
+YunaBot.on(Events.GuildMemberAdd, (member) => {
+    void handleGuildMemberAdd(member);
+});
 
 YunaBot.on(Events.Error, (error) => {
     logger.error(`Gateway error`, error);
@@ -49,6 +60,10 @@ process.on('SIGINT', () => shutdown('SIGINT'));
 process.on('SIGTERM', () => shutdown('SIGTERM'));
 
 try {
+    YunaBot.personality = await createPersonalityRuntime({
+        dataDir: process.env.DATA_DIR?.trim() || 'data',
+        logger,
+    });
     loadCommands(YunaBot);
     await YunaBot.login(loadConfig().token);
 } catch (error) {

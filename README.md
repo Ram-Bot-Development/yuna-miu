@@ -38,10 +38,11 @@ Yuna is part of the same bot friend group as **RamBot**, but she's an independen
 
 ### 🐱 Unique Personality
 
-- Cheerful and playful responses
-- Custom greetings and interactions
-- Catgirl-inspired reactions
-- A personality unique to Yuna
+Yuna can greet people, tell small jokes, react when she is mentioned, show Ram API pictures with `/image`, and run friendly social actions such as `/wave` and `/hug`.
+
+Automatic channel reactions and welcomes are off until a server turns them on. She does not need an AI provider.
+
+See [docs/personality.md](docs/personality.md) for commands, privacy, and configuration.
 
 ### 🏆 Achievements & Rewards
 
@@ -96,11 +97,12 @@ Detailed contribution guidelines will be published as development progresses.
 ## 📋 Roadmap
 
 - [x] Core Discord bot functionality
-- [ ] Personality and interaction system
-- [ ] Fun and games
-- [ ] Friendship system
-- [ ] Community features
+- [x] Personality and interaction system
+- [ ] None File Database
 - [ ] Web dashboard
+- [ ] Friendship system
+- [ ] Fun and games
+- [ ] Community features
 - [ ] Dashboard-exclusive achievements and rewards
 - [ ] Public beta testing
 - [ ] First stable release
