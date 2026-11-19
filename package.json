@@ -21,6 +21,7 @@
   "dependencies": {
     "discord.js": "^14.27.0",
     "dotenv": "^18.0.8",
+    "mysql2": "^3.24.6",
     "ram-api.js": "^16.0.0"
   },
   "devDependencies": {
