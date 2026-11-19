@@ -23,6 +23,9 @@ services:
     build: .
     image: yuna-miu:local
     container_name: yuna-miu
+    # The dashboard listens on 8787 inside this container. That port is not published.
+    # On the server, attach npm_default and proxy to yuna-miu:8787.
+    # On this machine, use docker-compose.local.yml.
     init: true
     restart: unless-stopped
     depends_on:
