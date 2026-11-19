@@ -11,9 +11,6 @@ export interface GuildPersonalitySettings {
     welcomeUseEmbed: boolean;
     welcomeDmEnabled: boolean;
     moodVariationEnabled: boolean;
-    aiEnabled: boolean;
-    /** In-memory context only, and only when the process allows a context window. */
-    aiContextEnabled: boolean;
     /**
      * Channels where mention replies are allowed.
      * Empty means nowhere. It does not mean every channel.
@@ -39,8 +36,6 @@ export const DEFAULT_GUILD_SETTINGS: GuildPersonalitySettings = {
     welcomeUseEmbed: false,
     welcomeDmEnabled: false,
     moodVariationEnabled: true,
-    aiEnabled: false,
-    aiContextEnabled: false,
     allowedChannelIds: [],
     contextualChannelIds: [],
     responseCooldownSeconds: 30,
@@ -90,8 +85,6 @@ export function normalizeGuildSettings(raw: unknown): GuildPersonalitySettings {
         welcomeUseEmbed: flag(input.welcomeUseEmbed, DEFAULT_GUILD_SETTINGS.welcomeUseEmbed),
         welcomeDmEnabled: flag(input.welcomeDmEnabled, DEFAULT_GUILD_SETTINGS.welcomeDmEnabled),
         moodVariationEnabled: flag(input.moodVariationEnabled, DEFAULT_GUILD_SETTINGS.moodVariationEnabled),
-        aiEnabled: flag(input.aiEnabled, DEFAULT_GUILD_SETTINGS.aiEnabled),
-        aiContextEnabled: flag(input.aiContextEnabled, DEFAULT_GUILD_SETTINGS.aiContextEnabled),
         allowedChannelIds: channelIds(input.allowedChannelIds, DEFAULT_GUILD_SETTINGS.allowedChannelIds),
         contextualChannelIds: channelIds(input.contextualChannelIds, DEFAULT_GUILD_SETTINGS.contextualChannelIds),
         responseCooldownSeconds: cooldown(input.responseCooldownSeconds),
@@ -154,8 +147,6 @@ export function describeGuildSettings(settings: GuildPersonalitySettings, intent
         `Welcome style: ${settings.welcomeUseEmbed ? 'embed' : 'plain text'}`,
         `Welcome DMs: ${on(settings.welcomeDmEnabled)}`,
         `Mood variation: ${on(settings.moodVariationEnabled)}`,
-        `AI mention replies: ${on(settings.aiEnabled)}`,
-        'AI context: ' + (settings.aiContextEnabled ? 'on, memory only, not saved to disk' : 'off'),
         `Social actions: ${on(settings.socialInteractionsEnabled)} (${settings.enabledSocialActions.join(', ') || 'none'})`,
         `Auto-reply cooldown: ${settings.responseCooldownSeconds}s`,
         `Message content intent: ${intents.messageContent ? 'on' : 'off. Contextual keywords need ENABLE_MESSAGE_CONTENT_INTENT'}`,
