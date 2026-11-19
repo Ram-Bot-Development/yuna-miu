@@ -40,8 +40,6 @@ export const yuna = {
                         .addBooleanOption((option) => option.setName('contextual').setDescription('Occasional replies without a mention. Off by default.'))
                         .addBooleanOption((option) => option.setName('welcomes').setDescription('Welcome new members. Off by default.'))
                         .addBooleanOption((option) => option.setName('mood').setDescription('Let the fictional mood change over time.'))
-                        .addBooleanOption((option) => option.setName('ai').setDescription('Allow an optional AI reply when Yuna is mentioned.'))
-                        .addBooleanOption((option) => option.setName('ai-context').setDescription('Keep a short in-memory context for AI replies.'))
                         .addBooleanOption((option) => option.setName('social').setDescription('Allow social actions such as hugs and waves.'))
                         .addBooleanOption((option) => option.setName('welcome-embed').setDescription('Send welcomes as an embed.'))
                         .addBooleanOption((option) => option.setName('welcome-dm').setDescription('Also DM the welcome. Off by default.'))
@@ -116,8 +114,7 @@ export const yuna = {
                         .setDescription('Change what Yuna may aim at you.')
                         .addBooleanOption((option) => option.setName('social').setDescription('Allow social actions aimed at you.'))
                         .addBooleanOption((option) => option.setName('affection').setDescription('Allow hugs, pats, and boops aimed at you.'))
-                        .addBooleanOption((option) => option.setName('mentions').setDescription('Allow Yuna to reply when you mention her.'))
-                        .addBooleanOption((option) => option.setName('ai').setDescription('Allow an AI reply when you mention her.')),
+                        .addBooleanOption((option) => option.setName('mentions').setDescription('Allow Yuna to reply when you mention her.')),
                 ),
         ),
     async execute(interaction) {
