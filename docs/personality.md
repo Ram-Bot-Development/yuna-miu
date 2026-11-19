@@ -2,7 +2,7 @@
 
 Yuna Miu is a fictional catgirl Discord bot. Her moods, jokes, and little bits of mischief are a presentation style. She is not a person, she does not have a private life, and she is not a substitute for real support.
 
-She works with no AI provider configured. An optional model can answer direct mentions later, without changing the commands.
+Mention replies, jokes, and welcomes are scripted. A mention is never sent to a model.
 
 Social actions such as `/hug` do not create a friendship, a relationship, or consent beyond that one command.
 
@@ -40,7 +40,6 @@ Slash replies are paced with the server cooldown (default 30 seconds) so one per
 | Welcome messages | Off |
 | Welcome direct messages | Off |
 | Fictional mood changes | On, and held for about 30 minutes |
-| AI | Off |
 
 An empty channel list means **nowhere**, not every channel. Add a channel with `/yuna settings channel` before Yuna will answer mentions or contextual lines. A thread is allowed when its parent channel is listed.
 
@@ -53,7 +52,7 @@ Contextual replies also need all of this:
 
 They use a short keyword list (a win, "good morning", a game moment). That is not an understanding of how someone feels. Serious or crisis-shaped messages are skipped. Yuna will not jump into those on her own.
 
-If someone mentions her in a hard moment, she uses a fixed scripted reply and does **not** send that message to an AI provider. She will say she is a bot and point toward a person or local emergency services. She is not a counselor.
+If someone mentions her in a hard moment, she uses a fixed scripted reply. She will say she is a bot and point toward a person or local emergency services. She is not a counselor.
 
 ## Welcomes
 
@@ -72,46 +71,20 @@ The bot needs permission to view and send messages in the welcome channel. `/inv
 - `social` — waves, cheers, high-fives, and the affection actions
 - `affection` — hugs, pats, and boops only
 - `mentions` — whether Yuna answers when you mention her
-- `ai` — whether a mention may be answered by a model
 
 If someone has opted out, the command fails privately. Yuna does not announce the preference in the channel.
 
-## Optional AI
-
-Leave `AI_PROVIDER` empty. Yuna keeps using scripted lines.
-
-To turn a provider on, set it in the environment (never in the settings file).
-
-Ram AI uses `POST /api/ask` and stays on that stream while the shared queue runs. The default origin is `https://ai.rambot.xyz` and the default model is `ram-ai-2-fast` (short replies). The key is a personal `ramai_…` key or a login token. Yuna keeps at most two Ram AI replies in flight (the public pool size) and checks `GET /status` while a reply waits. If she stops waiting, she cancels that job with `POST /task/stop`. The timeout defaults to 10 minutes. While that wait is going, she keeps the typing indicator on and, after a few seconds, posts a short note that she edits into the real reply.
-
-```text
-AI_PROVIDER=ram-ai
-RAM_AI_API_KEY=
-AI_MODEL=ram-ai-2-fast
-```
-
-`AI_PROVIDER=openai-compatible` and `AI_PROVIDER=local` use a chat-completions URL you set in `AI_BASE_URL`. Those still require `AI_MODEL`. The key belongs in `AI_API_KEY`.
-
-Then, in the server: `/yuna settings set ai:true`, and add the channel to the mention list.
-
-Limits:
-
-- Per-user and per-guild rate limits (`AI_USER_PER_MINUTE`, `AI_GUILD_PER_MINUTE`)
-- Timeout (`AI_TIMEOUT_MS`) and length (`AI_MAX_OUTPUT_TOKENS`)
-- If the provider fails, or the wait runs out, Yuna sends the scripted line instead
-- A line produced by a model ends with a note that it was an AI reply
-- No tools, no shell, and chat text is not treated as a system instruction
-- Conversation memory is off unless `/yuna settings set ai-context:true`. Even then it stays in process memory for a few minutes and is not written to disk
-
 ## What is stored
 
-`DATA_DIR/settings.json` (default `./data`) stores:
+MariaDB stores:
 
 - Guild switches, channel ids, and enabled actions
 - Per-member preference toggles
 - Recent welcome ids, so a duplicate join does not greet twice
 
-It does not store message text, model transcripts, tokens, or API keys. Docker Compose keeps that file in the `yuna-data` volume.
+It does not store message text, tokens, or API keys. Docker Compose keeps the database in the `yuna-db` volume. Set `DB_PASSWORD` and `DB_ROOT_PASSWORD` in `.env` before starting it.
+
+An existing `DATA_DIR/settings.json` is copied in once and then renamed `settings.imported-<time>.json`. Leave `DB_HOST` empty to keep using that file instead. Welcome ids older than a week are dropped.
 
 ## Limits
 
