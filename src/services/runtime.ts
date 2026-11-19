@@ -8,10 +8,6 @@ import { planSocial, type SocialPlan } from '../interactions/plan-social.js';
 import { planWelcome, type WelcomePlan } from '../interactions/plan-welcome.js';
 import { SeenIds } from '../interactions/seen.js';
 import type { Log } from '../log.js';
-import { createAiRuntime } from '../personality/ai/create-provider.js';
-import { composeWithOptionalAi } from '../personality/ai/engine.js';
-import { MemoryContext } from '../personality/ai/memory-context.js';
-import type { AiRuntimeConfig } from '../personality/ai/types.js';
 import { nextMood, type MoodSnapshot, type Rng } from '../personality/mood-selector.js';
 import { moodById, type MoodId } from '../personality/moods.js';
 import { renderPool, type PoolId } from '../personality/responses.js';
@@ -19,7 +15,7 @@ import { ResponseSelector } from '../personality/response-selector.js';
 import { mentionToken } from '../personality/safety.js';
 import type { SocialActionId } from '../config/social-actions.js';
 import { MemorySettingsStore } from '../store/memory-store.js';
-import { openSettingsStore } from '../store/file-store.js';
+import { openPersonalityStore } from '../store/open-store.js';
 import type { SettingsRepository } from '../store/repository.js';
 
 export class PersonalityRuntime {
@@ -30,11 +26,8 @@ export class PersonalityRuntime {
         readonly cooldowns: CooldownService,
         readonly seen: SeenIds,
         readonly selector: ResponseSelector,
-        readonly ai: AiRuntimeConfig,
-        readonly memory: MemoryContext,
         readonly intents: IntentFlags,
         private readonly rng: Rng,
-        private readonly log: Log,
     ) {}
 
     getGuild(guildId: string): GuildPersonalitySettings {
@@ -99,36 +92,10 @@ export class PersonalityRuntime {
         });
     }
 
-    async composeAutoReply(message: IncomingMessage, plan: AutoReplyPlan, now = Date.now()): Promise<string> {
+    composeAutoReply(message: IncomingMessage, plan: AutoReplyPlan, now = Date.now()): string {
         const guildId = message.guildId ?? 'dm';
         const mood = this.moodFor(guildId, this.getGuild(guildId), now);
-        const fallback = this.render(guildId, plan.pool, mood.id, message.authorId);
-        if (plan.kind !== 'mention') return fallback;
-        const settings = this.getGuild(guildId);
-        const prefs = this.getUser(guildId, message.authorId);
-        const result = await composeWithOptionalAi({
-            fallback,
-            provider: this.ai.provider,
-            guildAllowsAi: settings.aiEnabled,
-            userAllowsAi: prefs.allowAi,
-            contextEnabled: settings.aiContextEnabled && this.ai.contextMessages > 0,
-            sensitive: plan.sensitive,
-            userText: plan.userText,
-            mood: mood.id,
-            memory: this.memory,
-            memoryKey: `${guildId}:${message.channelId}:${message.authorId}`,
-            cooldowns: this.cooldowns,
-            guildId,
-            userId: message.authorId,
-            now,
-            timeoutMs: this.ai.timeoutMs,
-            maxTokens: this.ai.maxTokens,
-            contextLimit: this.ai.contextMessages,
-            userPerMinute: this.ai.userPerMinute,
-            guildPerMinute: this.ai.guildPerMinute,
-            log: this.log,
-        });
-        return result.text;
+        return this.render(guildId, plan.pool, mood.id, message.authorId);
     }
 
     planSocialAction(input: {
@@ -184,13 +151,10 @@ export async function createPersonalityRuntime(options: {
     rng?: Rng;
 }): Promise<PersonalityRuntime> {
     const env = options.env ?? process.env;
-    const ai = createAiRuntime(env);
-    if (ai.unavailableReason) options.logger.warn(ai.unavailableReason);
-    else if (ai.provider) options.logger.info(`Optional AI adapter ready (${ai.provider.id}).`);
 
     let store: SettingsRepository;
     try {
-        store = await openSettingsStore(options.dataDir, options.logger);
+        store = await openPersonalityStore(options.dataDir, env, options.logger);
     } catch (error) {
         options.logger.error('Settings could not be saved to disk. Using memory only for this run.', error);
         store = new MemorySettingsStore();
@@ -201,11 +165,8 @@ export async function createPersonalityRuntime(options: {
         new CooldownService(),
         new SeenIds(),
         new ResponseSelector(),
-        ai,
-        new MemoryContext(),
         readIntentFlags(env),
         options.rng ?? Math.random,
-        options.logger,
     );
 }
 
