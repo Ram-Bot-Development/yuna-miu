@@ -2,14 +2,12 @@ export interface UserInteractionPreferences {
     allowSocialActions: boolean;
     /** Hugs, pats, and boops. Separate from waves, cheers, and high-fives. */
     allowAffection: boolean;
-    allowAi: boolean;
     allowMentionReplies: boolean;
 }
 
 export const DEFAULT_USER_PREFERENCES: UserInteractionPreferences = {
     allowSocialActions: true,
     allowAffection: true,
-    allowAi: true,
     allowMentionReplies: true,
 };
 
@@ -24,7 +22,6 @@ export function normalizeUserPreferences(raw: unknown): UserInteractionPreferenc
     return {
         allowSocialActions: flag(input.allowSocialActions, DEFAULT_USER_PREFERENCES.allowSocialActions),
         allowAffection: flag(input.allowAffection, DEFAULT_USER_PREFERENCES.allowAffection),
-        allowAi: flag(input.allowAi, DEFAULT_USER_PREFERENCES.allowAi),
         allowMentionReplies: flag(input.allowMentionReplies, DEFAULT_USER_PREFERENCES.allowMentionReplies),
     };
 }
@@ -35,6 +32,5 @@ export function describeUserPreferences(prefs: UserInteractionPreferences): stri
         `Social actions aimed at you: ${on(prefs.allowSocialActions)}`,
         `Hugs, pats, and boops aimed at you: ${on(prefs.allowAffection)}`,
         `Mention replies to you: ${on(prefs.allowMentionReplies)}`,
-        `AI replies to you: ${on(prefs.allowAi)}`,
     ].join('\n');
 }
