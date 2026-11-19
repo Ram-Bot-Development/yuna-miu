@@ -1,12 +1,33 @@
 name: yuna-miu
 
 services:
+  db:
+    image: mariadb:11.8
+    container_name: yuna-db
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${DB_NAME:-yuna}
+      MARIADB_USER: ${DB_USER:-yuna}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - yuna-db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
   yuna:
     build: .
     image: yuna-miu:local
     container_name: yuna-miu
     init: true
     restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
     env_file:
       - .env
     environment:
@@ -14,8 +35,13 @@ services:
       DEPLOY_COMMANDS: "true"
       DATA_DIR: /app/data
       ENABLE_MESSAGE_CONTENT_INTENT: "true"
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_USER: ${DB_USER:-yuna}
+      DB_NAME: ${DB_NAME:-yuna}
     volumes:
       - yuna-data:/app/data
 
 volumes:
   yuna-data:
+  yuna-db:

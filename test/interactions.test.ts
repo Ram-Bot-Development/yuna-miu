@@ -115,7 +115,7 @@ describe('mentions', () => {
         const crisis = planAutoReply(
             autoInput({
                 message: mockMessage({ content: `<@${MOCK_BOT_ID}> I want to die`, mentionedBot: true }),
-                settings: guild({ allowedChannelIds: [MOCK_CHANNEL_ID], aiEnabled: true }),
+                settings: guild({ allowedChannelIds: [MOCK_CHANNEL_ID] }),
             }),
         );
         assert.equal(crisis?.sensitive, true);

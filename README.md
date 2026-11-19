@@ -40,7 +40,7 @@ Yuna is part of the same bot friend group as **RamBot**, but she's an independen
 
 Yuna can greet people, tell small jokes, react when she is mentioned, show Ram API pictures with `/image`, and run friendly social actions such as `/wave` and `/hug`.
 
-Automatic channel reactions and welcomes are off until a server turns them on. She does not need an AI provider.
+Automatic channel reactions and welcomes are off until a server turns them on. Mention replies are scripted.
 
 See [docs/personality.md](docs/personality.md) for commands, privacy, and configuration.
 
@@ -72,6 +72,8 @@ Features listed above are planned and may be added, modified, or removed as deve
 
 There is currently **no confirmed public release date**.
 
+Guild settings, member preferences, and welcome ids are stored in MariaDB. `docker compose up` starts that database with the bot. Set `DB_PASSWORD` and `DB_ROOT_PASSWORD` in `.env` first. Leave `DB_HOST` empty to keep using the settings file.
+
 ## 💻 Open Source
 
 Yuna Miu is a free and open-source project distributed under the **MIT License**.
@@ -98,7 +100,7 @@ Detailed contribution guidelines will be published as development progresses.
 
 - [x] Core Discord bot functionality
 - [x] Personality and interaction system
-- [ ] None File Database
+- [x] None File Database (MariaDB)
 - [ ] Web dashboard
 - [ ] Friendship system
 - [ ] Fun and games

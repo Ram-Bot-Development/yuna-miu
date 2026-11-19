@@ -52,8 +52,11 @@ function shutdown(signal: string): void {
     if (stopping) return;
     stopping = true;
     logger.info(`Shutting down (${signal})`);
-    YunaBot.destroy();
-    process.exit(0);
+    void (async () => {
+        await YunaBot.personality?.store.close?.();
+        YunaBot.destroy();
+        process.exit(0);
+    })();
 }
 
 process.on('SIGINT', () => shutdown('SIGINT'));

@@ -22,12 +22,12 @@ describe('settings persistence', () => {
             JSON.stringify({
                 guilds: {
                     [GUILD]: {
-                        aiEnabled: true,
+                        welcomeMessagesEnabled: true,
                         responseCooldownSeconds: -4,
                         contextualResponseChance: 9,
                         allowedChannelIds: ['nope', MOCK_CHANNEL_ID],
                     },
-                    'not-an-id': { aiEnabled: true },
+                    'not-an-id': { welcomeMessagesEnabled: true },
                 },
                 users: {
                     [`${GUILD}:${USER}`]: { allowAffection: false },
@@ -37,7 +37,7 @@ describe('settings persistence', () => {
 
         const store = await openSettingsStore(dir, silentLog);
         const settings = store.getGuild(GUILD);
-        assert.equal(settings.aiEnabled, true);
+        assert.equal(settings.welcomeMessagesEnabled, true);
         assert.equal(settings.personalityEnabled, true);
         assert.equal(settings.contextualResponsesEnabled, false);
         assert.equal(settings.responseCooldownSeconds, 5);
@@ -46,22 +46,22 @@ describe('settings persistence', () => {
         assert.equal(store.getUser(GUILD, USER).allowAffection, false);
         assert.match(describeGuildSettings(settings, { messageContent: false, guildMembers: false }), /nowhere, not every channel/);
 
-        await store.updateUser(GUILD, USER, { allowAi: false });
+        await store.updateUser(GUILD, USER, { allowMentionReplies: false });
         assert.equal(await store.markGreeted(GUILD, USER, Date.now()), true);
         assert.equal(await store.markGreeted(GUILD, USER, Date.now()), false);
 
         const saved = JSON.parse(await readFile(path.join(dir, 'settings.json'), 'utf8')) as {
             version: number;
             messages?: unknown;
-            users: Record<string, { allowAi?: boolean }>;
+            users: Record<string, { allowMentionReplies?: boolean }>;
         };
         assert.equal(saved.version, SETTINGS_VERSION);
         assert.equal(saved.messages, undefined);
-        assert.equal(saved.users[`${GUILD}:${USER}`]?.allowAi, false);
+        assert.equal(saved.users[`${GUILD}:${USER}`]?.allowMentionReplies, false);
 
         const reloaded = await openSettingsStore(dir, silentLog);
-        assert.equal(reloaded.getGuild(GUILD).aiEnabled, true);
-        assert.equal(reloaded.getUser(GUILD, USER).allowAi, false);
+        assert.equal(reloaded.getGuild(GUILD).welcomeMessagesEnabled, true);
+        assert.equal(reloaded.getUser(GUILD, USER).allowMentionReplies, false);
         assert.equal(await reloaded.markGreeted(GUILD, USER, Date.now()), false);
     });
 
