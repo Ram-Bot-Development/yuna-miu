@@ -96,12 +96,34 @@ You can help by:
 
 Detailed contribution guidelines will be published as development progresses.
 
+## Web dashboard
+
+Guild settings and your own interaction preferences are on a page served by the bot process. It stays inside the container. `docker compose up` does not publish that port.
+
+On the server, attach the Nginx Proxy Manager network yourself and point the proxy at the container:
+
+```bash
+docker network connect npm_default yuna-miu
+```
+
+Proxy to `yuna-miu:8787`. Set `DASHBOARD_PUBLIC_URL` to the https address that proxy serves, and register that origin plus `/auth/callback` as a Discord OAuth2 redirect.
+
+On this machine, publish the port only on localhost:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.local.yml up
+```
+
+Then open <http://127.0.0.1:8787>. Use `http://127.0.0.1:8787` as `DASHBOARD_PUBLIC_URL` and register `http://127.0.0.1:8787/auth/callback`.
+
+The dashboard stays off until `DISCORD_CLIENT_SECRET`, `DASHBOARD_SESSION_SECRET`, and `DASHBOARD_PUBLIC_URL` are set. A restart asks you to log in again.
+
 ## 📋 Roadmap
 
 - [x] Core Discord bot functionality
 - [x] Personality and interaction system
 - [x] None File Database (MariaDB)
-- [ ] Web dashboard
+- [x] Web dashboard
 - [ ] Friendship system
 - [ ] Fun and games
 - [ ] Community features
