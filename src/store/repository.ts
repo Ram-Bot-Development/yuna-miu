@@ -7,4 +7,5 @@ export interface SettingsRepository {
     getUser(guildId: string, userId: string): UserInteractionPreferences;
     updateUser(guildId: string, userId: string, patch: UserPreferencesPatch): Promise<UserInteractionPreferences>;
     markGreeted(guildId: string, userId: string, now: number): Promise<boolean>;
+    close?(): Promise<void>;
 }
