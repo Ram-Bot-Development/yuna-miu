@@ -8,6 +8,8 @@ import { handleGuildMemberAdd } from './events/guildMemberAdd.js';
 import { handleReady } from './events/ready.js';
 import { handleInteraction } from './events/interactionCreate.js';
 import { handleMessage } from './events/messageCreate.js';
+import { startDashboard, type DashboardHandle } from './dashboard/attach.js';
+import { readDashboardConfig } from './dashboard/config.js';
 import { logger } from './logger.js';
 import { createPersonalityRuntime } from './services/runtime.js';
 import * as ramapi from 'ram-api.js';
@@ -47,12 +49,25 @@ ramapi.Events.on('package-update', (data) => {
 });
 
 let stopping = false;
+let dashboard: DashboardHandle | null = null;
+
+async function closeDashboard(): Promise<void> {
+    const current = dashboard;
+    dashboard = null;
+    if (!current) return;
+    try {
+        await current.close();
+    } catch (error) {
+        logger.error('Dashboard did not close cleanly', error);
+    }
+}
 
 function shutdown(signal: string): void {
     if (stopping) return;
     stopping = true;
     logger.info(`Shutting down (${signal})`);
     void (async () => {
+        await closeDashboard();
         await YunaBot.personality?.store.close?.();
         YunaBot.destroy();
         process.exit(0);
@@ -68,7 +83,11 @@ try {
         logger,
     });
     loadCommands(YunaBot);
+    const dashboardConfig = readDashboardConfig();
+    if (!dashboardConfig.enabled) logger.info(dashboardConfig.reason);
+    else dashboard = await startDashboard({ config: dashboardConfig.config, client: YunaBot, logger });
     await YunaBot.login(loadConfig().token);
 } catch (error) {
+    await closeDashboard();
     logger.fatal(`Could not start`, error);
 }
