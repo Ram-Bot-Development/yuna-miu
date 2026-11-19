@@ -12,6 +12,7 @@ const GUILD = MOCK_GUILD_ID;
 const USER = MOCK_USER_ID;
 
 class FakeSql implements SqlExecutor {
+    readonly statements: string[] = [];
     readonly guilds = new Map<string, string>();
     readonly users = new Map<string, string>();
     readonly greeted = new Map<string, number>();
@@ -36,6 +37,7 @@ class FakeSql implements SqlExecutor {
     }
 
     async execute(sql: string, params: readonly unknown[] = []): Promise<{ affectedRows: number }> {
+        this.statements.push(sql);
         if (sql.includes('CREATE')) return { affectedRows: 0 };
         if (sql.includes('DELETE')) {
             if (sql.includes('greeted_at <')) {
@@ -94,6 +96,7 @@ describe('MariaDB settings', () => {
 
         const saved = first.sql.guilds.get(GUILD) ?? '';
         assert.equal(saved.includes('hello from chat'), false);
+        assert.equal(first.sql.statements.some((statement) => /AS\s+JSON/i.test(statement)), false);
         const second = store(first.sql);
         await second.store.prepare();
         assert.equal(second.store.getGuild(GUILD).welcomeMessagesEnabled, true);
