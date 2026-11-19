@@ -1,0 +1,6 @@
+services:
+  yuna:
+    ports:
+      - "127.0.0.1:8787:8787"
+    environment:
+      DASHBOARD_PUBLIC_URL: http://127.0.0.1:8787
