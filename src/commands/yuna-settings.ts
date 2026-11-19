@@ -61,7 +61,7 @@ export async function handleSettings(interaction: ChatInputCommandInteraction, s
     }
     await interaction.deferReply({ flags: MessageFlags.Ephemeral });
     const saved = await runtime.updateGuild(guild.id, patch);
-    const notes = intentNotes(saved, runtime.intents, runtime.ai.provider != null);
+    const notes = intentNotes(saved, runtime.intents);
     await quiet(interaction, [describeGuildSettings(saved, runtime.intents), ...notes].join('\n'));
 }
 
@@ -97,8 +97,6 @@ function readSettingsPatch(interaction: ChatInputCommandInteraction): GuildSetti
     setBool('contextual', 'contextualResponsesEnabled');
     setBool('welcomes', 'welcomeMessagesEnabled');
     setBool('mood', 'moodVariationEnabled');
-    setBool('ai', 'aiEnabled');
-    setBool('ai-context', 'aiContextEnabled');
     setBool('social', 'socialInteractionsEnabled');
     setBool('welcome-embed', 'welcomeUseEmbed');
     setBool('welcome-dm', 'welcomeDmEnabled');
@@ -116,24 +114,19 @@ function readPreferencePatch(interaction: ChatInputCommandInteraction): UserPref
     const social = interaction.options.getBoolean('social');
     const affection = interaction.options.getBoolean('affection');
     const mentions = interaction.options.getBoolean('mentions');
-    const ai = interaction.options.getBoolean('ai');
     if (social != null) patch.allowSocialActions = social;
     if (affection != null) patch.allowAffection = affection;
     if (mentions != null) patch.allowMentionReplies = mentions;
-    if (ai != null) patch.allowAi = ai;
     return patch;
 }
 
-function intentNotes(settings: GuildSettingsPatch, intents: { messageContent: boolean; guildMembers: boolean }, aiReady: boolean): string[] {
+function intentNotes(settings: GuildSettingsPatch, intents: { messageContent: boolean; guildMembers: boolean }): string[] {
     const notes: string[] = [];
     if (settings.contextualResponsesEnabled && !intents.messageContent) {
         notes.push('Contextual replies stay quiet until ENABLE_MESSAGE_CONTENT_INTENT is on and the bot is restarted.');
     }
     if (settings.welcomeMessagesEnabled && !intents.guildMembers) {
         notes.push('Welcomes stay quiet until ENABLE_GUILD_MEMBERS_INTENT is on and the bot is restarted.');
-    }
-    if (settings.aiEnabled && !aiReady) {
-        notes.push('AI is on for this server, but this process has no AI adapter, so I will keep using scripted lines.');
     }
     return notes;
 }
