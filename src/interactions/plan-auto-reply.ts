@@ -27,7 +27,7 @@ const CONTEXT_POOLS: Record<ContextualKind, PoolId> = {
 export interface AutoReplyPlan {
     kind: 'mention' | 'contextual';
     pool: PoolId;
-    /** Crisis mentions stay on the scripted line and are not forwarded to a model. */
+    /** A hard moment stays on the fixed scripted line. */
     sensitive: boolean;
     userText: string;
 }
